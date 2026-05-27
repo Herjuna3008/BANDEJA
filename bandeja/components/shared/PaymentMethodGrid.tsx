@@ -5,9 +5,10 @@ import { cn } from "@/lib/utils";
 interface PaymentMethodGridProps {
   selected: PaymentMethodId | null;
   onSelect: (method: PaymentMethodId) => void;
+  onQrisOpen?: () => void;
 }
 
-export function PaymentMethodGrid({ selected, onSelect }: PaymentMethodGridProps) {
+export function PaymentMethodGrid({ onQrisOpen, selected, onSelect }: PaymentMethodGridProps) {
   return (
     <div className="grid grid-cols-2 gap-2 sm:grid-cols-3" role="radiogroup">
       {paymentMethods.map((method) => {
@@ -20,7 +21,10 @@ export function PaymentMethodGrid({ selected, onSelect }: PaymentMethodGridProps
             type="button"
             role="radio"
             aria-checked={isSelected}
-            onClick={() => onSelect(method.id)}
+            onClick={() => {
+              onSelect(method.id);
+              if (method.id === "qris") onQrisOpen?.();
+            }}
             className={cn(
               "rounded-[4px] border border-neutral-800 bg-[#0a0a08] px-3 py-4 text-center text-xs text-neutral-500 transition-colors hover:border-lime-300 hover:text-lime-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-300",
               isSelected && "border-lime-300 bg-lime-300/5 text-lime-300",

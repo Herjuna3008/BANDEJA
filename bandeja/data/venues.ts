@@ -3,11 +3,11 @@ import type { Venue } from "@/types";
 export const venues: Venue[] = [
   {
     id: "south",
-    code: "VENUE ALPHA",
-    name: "BANDEJA SOUTH",
+    code: "NEW VENUE",
+    name: "URBAN PADEL GADING SERPONG",
     shortName: "South",
-    area: "Jakarta Selatan",
-    district: "Kemang",
+    area: "Tangerang",
+    district: "Gading Serpong",
     pricePerHour: 120000,
     tone: "lime",
     courts: [
@@ -19,11 +19,11 @@ export const venues: Venue[] = [
   },
   {
     id: "north",
-    code: "VENUE BRAVO",
-    name: "BANDEJA NORTH",
-    shortName: "North",
-    area: "Jakarta Utara",
-    district: "Kelapa Gading",
+    code: "VENUE BSD",
+    name: "RED WOOD PADEL BSD",
+    shortName: "RED WOOD",
+    area: "TANGERANG SELATAN",
+    district: "BSD CITY",
     pricePerHour: 100000,
     tone: "orange",
     courts: [
@@ -35,11 +35,11 @@ export const venues: Venue[] = [
   },
   {
     id: "west",
-    code: "VENUE CHARLIE",
-    name: "BANDEJA WEST",
-    shortName: "West",
-    area: "Jakarta Barat",
-    district: "Puri Indah",
+    code: "VENUE ALAM SUTERA",
+    name: "GANCHO ARENA",
+    shortName: "GANCHO ARENA",
+    area: "TANGERANG SELATAN",
+    district: "ALAM SUTERA",
     pricePerHour: 90000,
     tone: "teal",
     courts: [

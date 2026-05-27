@@ -6,6 +6,7 @@ export type CourtStatus = "available" | "booked";
 export type PlayerLevel = "beginner" | "intermediate" | "advanced";
 export type PaymentStep = "details" | "payment" | "success";
 export type PaymentMethodId =
+  | "qris"
   | "bank"
   | "gopay"
   | "ovo"

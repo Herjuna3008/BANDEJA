@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Medal } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -23,6 +24,7 @@ import {
 import { FormField } from "@/components/shared/FormField";
 import { PaymentMethodGrid } from "@/components/shared/PaymentMethodGrid";
 import { PaymentSteps } from "@/components/shared/PaymentSteps";
+import { QrisDialog } from "@/components/shared/QrisDialog";
 import { venues } from "@/data/venues";
 import type { Coach, PaymentMethodId, PaymentStep } from "@/types";
 import { coachBookingSchema, type CoachBookingFormValues } from "@/lib/validations";
@@ -57,6 +59,7 @@ export function CoachBookingDialog({
   step,
   total,
 }: CoachBookingDialogProps) {
+  const [qrisOpen, setQrisOpen] = useState(false);
   const form = useForm<CoachBookingFormValues>({
     resolver: zodResolver(coachBookingSchema),
     defaultValues: { name: "", venue: venues[0]?.name, date: "", time: "", sessions: 1 },
@@ -158,6 +161,7 @@ export function CoachBookingDialog({
                 <PaymentMethodGrid
                   selected={paymentMethod}
                   onSelect={onPaymentMethodChange}
+                  onQrisOpen={() => setQrisOpen(true)}
                 />
               </div>
               {form.formState.errors.root?.message ? (
@@ -187,6 +191,7 @@ export function CoachBookingDialog({
           ) : null}
         </div>
       </DialogContent>
+      <QrisDialog open={qrisOpen} total={total} onOpenChange={setQrisOpen} />
     </Dialog>
   );
 }
