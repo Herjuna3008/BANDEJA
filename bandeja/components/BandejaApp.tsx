@@ -44,7 +44,7 @@ export function BandejaApp() {
           }
           onCourtSelect={(venue, court) => booking.openBooking(venue, court)}
         />
-        <CoachSection coaches={coaches} onCoachSelect={coachBooking.openCoachBooking} />
+        <CoachSection coaches={coaches} onCoachSelect={(coach) => coachBooking.openCoachBooking(coach, [])} />
         <MatchmakingSection
           filter={matchmaking.filter}
           isFinding={matchmaking.isFinding}
@@ -69,7 +69,7 @@ export function BandejaApp() {
         step={booking.step}
         total={booking.total}
         onClose={booking.closeBooking}
-        onConfirmPayment={booking.confirmPayment}
+        onConfirmPayment={async (formValues) => { await booking.confirmPayment(formValues); }}
         onDurationChange={booking.setDuration}
         onPaymentMethodChange={booking.setPaymentMethod}
         onStepChange={booking.setStep}
@@ -79,6 +79,7 @@ export function BandejaApp() {
       <CoachBookingDialog
         bookingCode={coachBooking.bookingCode}
         coach={coachBooking.activeCoach}
+        coachVenues={coachBooking.coachVenues}
         isProcessing={coachBooking.isProcessing}
         paymentMethod={coachBooking.paymentMethod}
         sessions={coachBooking.sessions}

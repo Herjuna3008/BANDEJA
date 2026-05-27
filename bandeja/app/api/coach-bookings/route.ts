@@ -43,13 +43,31 @@ export async function POST(req: NextRequest) {
   }
 
   const { coachId, venueId, date, time, sessions, totalPrice, paymentMethod } = parsed.data;
+  const bookingDate = new Date(date);
+
+  // Check: coach not already booked at same date + time (non-cancelled)
+  const conflict = await prisma.coachBooking.findFirst({
+    where: {
+      coachId,
+      date: bookingDate,
+      time,
+      status: { not: "CANCELLED" },
+    },
+  });
+
+  if (conflict) {
+    return NextResponse.json(
+      { error: "Coach sudah terbooked pada waktu tersebut." },
+      { status: 409 }
+    );
+  }
 
   const booking = await prisma.coachBooking.create({
     data: {
       userId: session.user.id,
       coachId,
       venueId,
-      date: new Date(date),
+      date: bookingDate,
       time,
       sessions,
       totalPrice,

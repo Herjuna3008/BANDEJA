@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { getBookingTimeSlots } from "@/lib/booking-utils";
 import { z } from "zod";
 
 const updateSchema = z.object({
@@ -32,9 +33,29 @@ export async function PATCH(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
+  const newStatus = parsed.data.status;
+
+  // When cancelling, release the time slots so the court becomes available again
+  if (newStatus === "CANCELLED" && booking.status !== "CANCELLED") {
+    const timeSlots = getBookingTimeSlots(booking.startTime, booking.duration);
+    const bookingDate = booking.date;
+
+    await prisma.$transaction([
+      prisma.booking.update({ where: { id }, data: { status: "CANCELLED" } }),
+      ...timeSlots.map((time) =>
+        prisma.timeSlot.updateMany({
+          where: { courtId: booking.courtId, date: bookingDate, time },
+          data: { isBooked: false },
+        })
+      ),
+    ]);
+
+    return NextResponse.json({ status: "CANCELLED" });
+  }
+
   const updated = await prisma.booking.update({
     where: { id },
-    data: { status: parsed.data.status },
+    data: { status: newStatus },
   });
 
   return NextResponse.json(updated);

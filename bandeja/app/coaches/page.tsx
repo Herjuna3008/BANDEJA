@@ -1,5 +1,4 @@
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -7,7 +6,6 @@ import { CoachesClient } from "./coaches-client";
 
 export default async function CoachesPage() {
   const session = await auth();
-  if (!session?.user) redirect("/login");
 
   const coaches = await prisma.coach.findMany({
     where: { status: "APPROVED" },

@@ -132,10 +132,14 @@ export function VenueDetailClient({ venue, userId }: Props) {
         step={booking.step}
         total={booking.total}
         onClose={booking.closeBooking}
-        onConfirmPayment={async () => {
-          await booking.confirmPayment();
-          if (booking.bookingCode) {
-            toast.success(`Booking berhasil! Kode: ${booking.bookingCode}`);
+        onConfirmPayment={async (formValues) => {
+          try {
+            await booking.confirmPayment(formValues);
+            toast.success("Booking berhasil!");
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : "Booking gagal";
+            toast.error(msg);
+            throw err;
           }
         }}
         onDurationChange={booking.setDuration}

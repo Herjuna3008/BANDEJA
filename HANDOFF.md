@@ -29,7 +29,7 @@ Padel court booking platform. Next.js 16 full-stack app at `./bandeja/`. Feature
 | Coach dashboard | ✅ Done |
 | Booking dialog (court) | ✅ UI done, no real payment gateway |
 | Coach booking | ✅ UI done, no real payment gateway |
-| Time slot blocking | ❌ Not implemented — bookings don't block the same slot |
+| Time slot blocking | ✅ Done — POST /api/bookings checks + blocks TimeSlot rows in transaction |
 | Email notifications | ❌ Not implemented |
 | Image uploads | ❌ Placeholder only |
 
@@ -138,7 +138,7 @@ bandeja/
 
 ## Pending Work
 
-1. **Time slot blocking** — `TimeSlot` model exists but not used. Bookings don't prevent double-booking same court+date+time.
+1. ~~**Time slot blocking**~~ — ✅ Done. `POST /api/bookings` checks TimeSlot conflicts in transaction, blocks slots on create, releases on CANCELLED.
 2. **Payment gateway** — dialog UI exists, marks CONFIRMED locally. No Midtrans/Xendit integration.
 3. **Image uploads** — venues and coaches use placeholder/Google avatar images only.
 4. **Email notifications** — no transactional email on booking confirmation.

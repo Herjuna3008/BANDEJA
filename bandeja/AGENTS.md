@@ -144,7 +144,7 @@ Route guards: `proxy.ts` only. Do not add guards inside pages.
 
 ## What Is NOT Done (do not assume it works)
 
-- Time slot conflict prevention (TimeSlot model exists, not wired)
 - Payment gateway (UI only, no Midtrans/Xendit)
 - Image uploads (placeholder only)
 - Email notifications
+- ~~Time slot blocking~~ (DONE — `lib/booking-utils.ts` + `POST /api/bookings` + venue-owner PATCH cancel)

@@ -25,7 +25,6 @@ import { FormField } from "@/components/shared/FormField";
 import { PaymentMethodGrid } from "@/components/shared/PaymentMethodGrid";
 import { PaymentSteps } from "@/components/shared/PaymentSteps";
 import { QrisDialog } from "@/components/shared/QrisDialog";
-import { venues } from "@/data/venues";
 import type { Coach, PaymentMethodId, PaymentStep } from "@/types";
 import { coachBookingSchema, type CoachBookingFormValues } from "@/lib/validations";
 import { cn, formatCurrency } from "@/lib/utils";
@@ -33,13 +32,14 @@ import { cn, formatCurrency } from "@/lib/utils";
 interface CoachBookingDialogProps {
   bookingCode: string;
   coach: Coach | null;
+  coachVenues: { id: string; name: string }[];
   isProcessing: boolean;
   paymentMethod: PaymentMethodId | null;
   sessions: number;
   step: PaymentStep;
   total: number;
   onClose: () => void;
-  onConfirmPayment: () => void;
+  onConfirmPayment: (formValues: CoachBookingFormValues) => Promise<void>;
   onPaymentMethodChange: (method: PaymentMethodId) => void;
   onSessionsChange: (sessions: number) => void;
   onStepChange: (step: PaymentStep) => void;
@@ -48,6 +48,7 @@ interface CoachBookingDialogProps {
 export function CoachBookingDialog({
   bookingCode,
   coach,
+  coachVenues,
   isProcessing,
   onClose,
   onConfirmPayment,
@@ -62,12 +63,18 @@ export function CoachBookingDialog({
   const [qrisOpen, setQrisOpen] = useState(false);
   const form = useForm<CoachBookingFormValues>({
     resolver: zodResolver(coachBookingSchema),
-    defaultValues: { name: "", venue: venues[0]?.name, date: "", time: "", sessions: 1 },
+    defaultValues: { name: "", venue: coachVenues[0]?.id ?? "", date: "", time: "", sessions: 1 },
   });
 
   useEffect(() => {
     form.setValue("sessions", sessions);
   }, [form, sessions]);
+
+  useEffect(() => {
+    if (coachVenues[0]?.id) {
+      form.setValue("venue", coachVenues[0].id);
+    }
+  }, [form, coachVenues]);
 
   if (!coach) return null;
 
@@ -76,13 +83,19 @@ export function CoachBookingDialog({
     onStepChange("payment");
   }
 
-  function handlePaymentSubmit() {
+  async function handlePaymentSubmit() {
     if (!paymentMethod) {
       form.setError("root", { message: "Pilih metode pembayaran" });
       return;
     }
     form.clearErrors("root");
-    onConfirmPayment();
+    const values = form.getValues();
+    try {
+      await onConfirmPayment(values);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Booking gagal";
+      form.setError("root", { message: msg });
+    }
   }
 
   return (
@@ -102,15 +115,15 @@ export function CoachBookingDialog({
               </FormField>
               <FormField label="Venue" error={form.formState.errors.venue?.message}>
                 <Select
-                  defaultValue={venues[0]?.name}
+                  defaultValue={coachVenues[0]?.id}
                   onValueChange={(value) => form.setValue("venue", value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Pilih venue" />
                   </SelectTrigger>
                   <SelectContent>
-                    {venues.map((venue) => (
-                      <SelectItem key={venue.id} value={venue.name}>
+                    {coachVenues.map((venue) => (
+                      <SelectItem key={venue.id} value={venue.id}>
                         {venue.name}
                       </SelectItem>
                     ))}
@@ -160,7 +173,10 @@ export function CoachBookingDialog({
                 </p>
                 <PaymentMethodGrid
                   selected={paymentMethod}
-                  onSelect={onPaymentMethodChange}
+                  onSelect={(method) => {
+                    onPaymentMethodChange(method);
+                    form.clearErrors("root");
+                  }}
                   onQrisOpen={() => setQrisOpen(true)}
                 />
               </div>

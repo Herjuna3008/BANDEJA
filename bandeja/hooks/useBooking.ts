@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import type { Court, PaymentMethodId, PaymentStep, Venue } from "@/types";
-import { generateBookingCode } from "@/lib/utils";
 
 export interface ActiveCourtBooking {
   venue: Venue;
@@ -36,12 +35,31 @@ export function useBooking() {
     setActiveBooking(null);
   }
 
-  async function confirmPayment() {
+  async function confirmPayment(formData: { name: string; phone: string; date: string }) {
+    if (!activeBooking || !selectedTime || !paymentMethod) return;
     setIsProcessing(true);
-    await new Promise((resolve) => setTimeout(resolve, 650));
-    setBookingCode(generateBookingCode());
-    setStep("success");
-    setIsProcessing(false);
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          courtId: activeBooking.court.id,
+          date: formData.date,
+          startTime: selectedTime,
+          duration,
+          totalPrice: total,
+          paymentMethod,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Booking gagal");
+      }
+      setBookingCode(data.bookingCode);
+      setStep("success");
+    } finally {
+      setIsProcessing(false);
+    }
   }
 
   return {

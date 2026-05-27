@@ -22,16 +22,19 @@ export function CoachDetailClient({ coach }: Props) {
   const coachBooking = useCoachBooking();
 
   function handleBook() {
-    coachBooking.openCoachBooking({
-      id: coach.id,
-      name: coach.user.name ?? "Coach",
-      specialty: coach.specialty,
-      experience: coach.experience,
-      ratePerSession: coach.ratePerSession,
-      status: "available",
-      tone: "lime",
-      icon: Dumbbell,
-    });
+    coachBooking.openCoachBooking(
+      {
+        id: coach.id,
+        name: coach.user.name ?? "Coach",
+        specialty: coach.specialty,
+        experience: coach.experience,
+        ratePerSession: coach.ratePerSession,
+        status: "available",
+        tone: "lime",
+        icon: Dumbbell,
+      },
+      coach.coachVenues.map((cv) => ({ id: cv.venue.id, name: cv.venue.name })),
+    );
   }
 
   return (
@@ -119,6 +122,7 @@ export function CoachDetailClient({ coach }: Props) {
         step={coachBooking.step}
         total={coachBooking.total}
         onClose={coachBooking.closeCoachBooking}
+        coachVenues={coachBooking.coachVenues}
         onConfirmPayment={coachBooking.confirmPayment}
         onPaymentMethodChange={coachBooking.setPaymentMethod}
         onSessionsChange={coachBooking.setSessions}

@@ -41,7 +41,7 @@ interface BookingDialogProps {
   step: PaymentStep;
   total: number;
   onClose: () => void;
-  onConfirmPayment: () => void;
+  onConfirmPayment: (formValues: BookingFormValues) => Promise<void>;
   onDurationChange: (duration: number) => void;
   onPaymentMethodChange: (method: PaymentMethodId) => void;
   onStepChange: (step: PaymentStep) => void;
@@ -87,13 +87,19 @@ export function BookingDialog({
     onStepChange("payment");
   }
 
-  function handlePaymentSubmit() {
+  async function handlePaymentSubmit() {
     if (!paymentMethod) {
       form.setError("root", { message: "Pilih metode pembayaran" });
       return;
     }
     form.clearErrors("root");
-    onConfirmPayment();
+    const values = form.getValues();
+    try {
+      await onConfirmPayment(values);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Booking gagal";
+      form.setError("root", { message: msg });
+    }
   }
 
   return (
@@ -178,7 +184,10 @@ export function BookingDialog({
                 </p>
                 <PaymentMethodGrid
                   selected={paymentMethod}
-                  onSelect={onPaymentMethodChange}
+                  onSelect={(method) => {
+                    onPaymentMethodChange(method);
+                    form.clearErrors("root");
+                  }}
                   onQrisOpen={() => setQrisOpen(true)}
                 />
               </div>

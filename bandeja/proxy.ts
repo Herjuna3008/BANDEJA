@@ -8,7 +8,13 @@ export default auth(async (req) => {
   const path = nextUrl.pathname;
 
   // Public routes
-  if (path === "/" || path === "/login") {
+  if (
+    path === "/" ||
+    path === "/login" ||
+    path.startsWith("/venues") ||
+    path.startsWith("/coaches") ||
+    path.startsWith("/matchmaking")
+  ) {
     return NextResponse.next();
   }
 
