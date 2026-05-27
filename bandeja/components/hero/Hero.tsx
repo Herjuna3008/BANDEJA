@@ -3,7 +3,6 @@
 import { Swords, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from 'next/image'
 import { Button } from "@/components/ui/button";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 
@@ -25,16 +24,9 @@ export function Hero({ isLoggedIn }: HeroProps) {
     <section
       id="top"
       className="relative flex min-h-dvh overflow-hidden px-5 pb-16 pt-32 md:px-12 md:pb-20"
+      style={{ backgroundImage: "url(/bg-padel.jpeg)", backgroundSize: "cover", backgroundPosition: "center" }}
     >
-      <div className="absolute inset-0 bg-[linear-gradient(135deg,#0a0a08_0%,#0d1a0a_50%,#0a0a08_100%)]" />
-      <div className="grid-element">
-        <Image
-          fill
-          src="/bg-padel.jpeg"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          alt="Background image of people playing padel"
-        />
-      </div>
+      <div className="absolute inset-0 bg-black/50" />
       <motion.div
         variants={staggerContainer}
         initial="hidden"
