@@ -2,6 +2,7 @@
 
 import { Swords, Zap } from "lucide-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 
@@ -11,7 +12,14 @@ const stats = [
   { value: "8", label: "Pelatih Pro" },
 ];
 
-export function Hero() {
+interface HeroProps {
+  isLoggedIn?: boolean;
+}
+
+export function Hero({ isLoggedIn }: HeroProps) {
+  const bookHref = isLoggedIn ? "/venues" : "/login";
+  const matchHref = isLoggedIn ? "/matchmaking" : "/login";
+
   return (
     <section
       id="top"
@@ -50,16 +58,16 @@ export function Hero() {
           </motion.p>
           <motion.div variants={fadeUp} className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Button asChild>
-              <a href="#venues">
+              <Link href={bookHref}>
                 <Zap className="h-4 w-4" />
                 Book Lapangan
-              </a>
+              </Link>
             </Button>
             <Button asChild variant="outline">
-              <a href="#match">
+              <Link href={matchHref}>
                 <Swords className="h-4 w-4" />
                 Cari Lawan
-              </a>
+              </Link>
             </Button>
           </motion.div>
         </div>

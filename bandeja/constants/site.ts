@@ -3,9 +3,9 @@ export const SITE = {
   description:
     "Platform booking padel terlengkap di Indonesia. Lapangan terbaik, pelatih berpengalaman, dan komunitas pemain yang aktif.",
   nav: [
-    { label: "Lapangan", href: "#venues" },
-    { label: "Pelatih", href: "#coaches" },
-    { label: "Cari Lawan", href: "#match" },
+    { label: "Lapangan", href: "/venues" },
+    { label: "Pelatih", href: "/coaches" },
+    { label: "Cari Lawan", href: "/matchmaking" },
   ],
 };
 

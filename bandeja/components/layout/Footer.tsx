@@ -2,7 +2,6 @@ import { SITE } from "@/constants/site";
 import { Separator } from "@/components/ui/separator";
 
 const columns = [
-  { title: "Venue", links: ["Bandeja South", "Bandeja North", "Bandeja West"] },
   { title: "Layanan", links: ["Booking Lapangan", "Sewa Pelatih", "Cari Lawan"] },
   { title: "Info", links: ["Tentang Kami", "Kontak", "FAQ"] },
 ];
